@@ -1,4 +1,4 @@
-package com.buri.restfulservice.domain.user;
+package com.buri.restfulservice.domain.user.entity;
 
 import com.buri.restfulservice.domain.user.dto.CreateUserRequest;
 import java.time.LocalDate;

@@ -3,6 +3,7 @@ package com.buri.restfulservice.domain.user;
 import com.buri.restfulservice.domain.user.dto.CreateUserRequest;
 import com.buri.restfulservice.domain.user.dto.UpdateUserRequest;
 import com.buri.restfulservice.domain.user.dto.UserResponse;
+import com.buri.restfulservice.domain.user.entity.User;
 import com.buri.restfulservice.domain.user.exception.UserNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;

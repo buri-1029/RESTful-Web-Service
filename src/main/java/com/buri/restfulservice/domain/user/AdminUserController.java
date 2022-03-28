@@ -1,8 +1,11 @@
 package com.buri.restfulservice.domain.user;
 
+import com.buri.restfulservice.domain.user.entity.User;
+import com.buri.restfulservice.domain.user.entity.UserV2;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import org.springframework.beans.BeanUtils;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -10,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/admin/users")
+@RequestMapping("/admin")
 public class AdminUserController {
 
 	private final UserService userService;
@@ -19,7 +22,7 @@ public class AdminUserController {
 		this.userService = userService;
 	}
 
-	@GetMapping
+	@GetMapping("/users")
 	public MappingJacksonValue retrieveAllUsers() {
 		SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter
 			.filterOutAllExcept("id", "name", "createdAt");
@@ -32,7 +35,10 @@ public class AdminUserController {
 		return mapping;
 	}
 
-	@GetMapping("/{id}")
+	// @GetMapping(value = "/v1/users/{id}")
+	// @GetMapping(value = "/users/{id}/", params = "version=1")
+	// @GetMapping(value = "/users/{id}/", headers = "X-API-VERSION=1")
+	@GetMapping(value = "/users/{id}", produces = "application/vnd.company.appv1+json")
 	public MappingJacksonValue retrieveUser(@PathVariable Long id) {
 		SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter
 			.filterOutAllExcept("id", "name", "createdAt", "password");
@@ -40,6 +46,25 @@ public class AdminUserController {
 		FilterProvider filters = new SimpleFilterProvider().addFilter("UserInfo", filter);
 
 		MappingJacksonValue mapping = new MappingJacksonValue(userService.getUser(id));
+		mapping.setFilters(filters);
+
+		return mapping;
+	}
+
+	// @GetMapping(value = "/v2/users/{id}")
+	// @GetMapping(value = "/users/{id}/", params = "version=2")
+	// @GetMapping(value = "/users/{id}/", headers = "X-API-VERSION=2")
+	@GetMapping(value = "/users/{id}", produces = "application/vnd.company.appv2+json")
+	public MappingJacksonValue retrieveUserV2(@PathVariable Long id) {
+		UserV2 userV2 = new UserV2("VIP");
+		BeanUtils.copyProperties(new User(), userV2);
+
+		SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter
+			.filterOutAllExcept("id", "name", "createdAt", "grade");
+
+		FilterProvider filters = new SimpleFilterProvider().addFilter("UserInfoV2", filter);
+
+		MappingJacksonValue mapping = new MappingJacksonValue(userV2);
 		mapping.setFilters(filters);
 
 		return mapping;

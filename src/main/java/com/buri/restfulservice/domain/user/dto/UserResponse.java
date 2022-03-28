@@ -1,6 +1,6 @@
 package com.buri.restfulservice.domain.user.dto;
 
-import com.buri.restfulservice.domain.user.User;
+import com.buri.restfulservice.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import java.time.LocalDate;
 import lombok.Getter;
