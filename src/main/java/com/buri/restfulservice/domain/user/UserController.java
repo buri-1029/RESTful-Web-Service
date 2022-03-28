@@ -1,11 +1,15 @@
 package com.buri.restfulservice.domain.user;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+
 import com.buri.restfulservice.domain.user.dto.CreateUserRequest;
 import com.buri.restfulservice.domain.user.dto.UpdateUserRequest;
 import com.buri.restfulservice.domain.user.dto.UserResponse;
 import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,13 +32,27 @@ public class UserController {
 	}
 
 	@GetMapping
-	public ResponseEntity<List<UserResponse>> retrieveAllUsers() {
-		return ResponseEntity.ok(userService.getUsers());
+	public List<EntityModel<UserResponse>> retrieveAllUsers() {
+		return userService.getUsers()
+						  .stream()
+						  .map(
+							  users -> EntityModel.of(
+								  users,
+								  linkTo(methodOn(UserController.class)
+											 .retrieveAllUsers()).withSelfRel()
+							  )
+						  )
+						  .collect(Collectors.toList());
+
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<UserResponse> retrieveUser(@PathVariable Long id) {
-		return ResponseEntity.ok(userService.getUser(id));
+	public EntityModel<UserResponse> retrieveUser(@PathVariable Long id) {
+		return EntityModel.of(
+			userService.getUser(id),
+			linkTo(methodOn(UserController.class).retrieveUser(id)).withSelfRel(),
+			linkTo(methodOn(UserController.class).retrieveAllUsers()).withRel("all-users")
+		);
 	}
 
 	@PostMapping()

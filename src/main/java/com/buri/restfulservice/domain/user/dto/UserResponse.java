@@ -1,14 +1,13 @@
 package com.buri.restfulservice.domain.user.dto;
 
 import com.buri.restfulservice.domain.user.entity.User;
-import com.fasterxml.jackson.annotation.JsonFilter;
 import java.time.LocalDate;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@JsonFilter("UserInfo")
+// @JsonFilter("UserInfo")
 // @JsonIgnoreProperties(value = {"password", "ssn"}) // 외부에 노출하고 싶지 않을 때
 public class UserResponse {
 
