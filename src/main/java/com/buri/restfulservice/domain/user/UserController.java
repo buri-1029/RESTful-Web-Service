@@ -37,13 +37,11 @@ public class UserController {
 	public List<EntityModel<UserResponse>> retrieveAllUsers() {
 		return userService.getUsers()
 						  .stream()
-						  .map(
-							  users -> EntityModel.of(
-								  users,
-								  linkTo(methodOn(UserController.class)
-											 .retrieveAllUsers()).withSelfRel()
-							  )
-						  )
+						  .map(users -> EntityModel.of(
+							  users,
+							  linkTo(methodOn(UserController.class)
+										 .retrieveAllUsers()).withSelfRel()
+						  ))
 						  .collect(Collectors.toList());
 
 	}
