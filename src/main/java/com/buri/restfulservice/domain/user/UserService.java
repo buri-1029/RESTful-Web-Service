@@ -1,5 +1,9 @@
 package com.buri.restfulservice.domain.user;
 
+import com.buri.restfulservice.domain.post.PostRepository;
+import com.buri.restfulservice.domain.post.dto.PostRequest;
+import com.buri.restfulservice.domain.post.dto.PostResponse;
+import com.buri.restfulservice.domain.post.entity.Post;
 import com.buri.restfulservice.domain.user.dto.CreateUserRequest;
 import com.buri.restfulservice.domain.user.dto.UpdateUserRequest;
 import com.buri.restfulservice.domain.user.dto.UserResponse;
@@ -13,9 +17,14 @@ import org.springframework.stereotype.Service;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final PostRepository postRepository;
 
-	public UserService(UserRepository userRepository) {
+	public UserService(
+		UserRepository userRepository,
+		PostRepository postRepository
+	) {
 		this.userRepository = userRepository;
+		this.postRepository = postRepository;
 	}
 
 	public List<UserResponse> getUsers() {
@@ -45,6 +54,22 @@ public class UserService {
 	public void deleteUser(Long id) {
 		User user = findUser(id);
 		userRepository.delete(user);
+	}
+
+	public List<PostResponse> getPostsByUser(Long id) {
+		User user = findUser(id);
+
+		return user.getPosts()
+				   .stream()
+				   .map(PostResponse::new)
+				   .collect(Collectors.toList());
+	}
+
+	public Long createPost(Long id, PostRequest postRequest) {
+		User user = findUser(id);
+
+		return postRepository.save(Post.createPost(postRequest.getDesc(), user))
+							 .getId();
 	}
 
 	private User findUser(Long id) {

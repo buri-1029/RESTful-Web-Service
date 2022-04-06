@@ -2,6 +2,8 @@ package com.buri.restfulservice.domain.user;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
+import com.buri.restfulservice.domain.post.dto.PostRequest;
+import com.buri.restfulservice.domain.post.dto.PostResponse;
 import com.buri.restfulservice.domain.user.dto.CreateUserRequest;
 import com.buri.restfulservice.domain.user.dto.UpdateUserRequest;
 import com.buri.restfulservice.domain.user.dto.UserResponse;
@@ -85,4 +87,25 @@ public class UserController {
 	public void deleteUser(@PathVariable Long id) {
 		userService.deleteUser(id);
 	}
+
+	@GetMapping("/{id}/posts")
+	public List<PostResponse> retrieveAllPostsByUser(@PathVariable Long id) {
+		return userService.getPostsByUser(id);
+	}
+
+	@PostMapping("/{id}/posts")
+	public ResponseEntity<Long> createPost(
+		@PathVariable Long id,
+		@Valid @RequestBody PostRequest request
+	) {
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+												  .path("/{id}")
+												  .buildAndExpand(
+													  userService.createPost(id, request))
+												  .toUri();
+
+		return ResponseEntity.created(location)
+							 .build();
+	}
+
 }

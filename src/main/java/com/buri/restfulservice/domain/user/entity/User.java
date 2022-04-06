@@ -1,11 +1,14 @@
 package com.buri.restfulservice.domain.user.entity;
 
+import com.buri.restfulservice.domain.post.entity.Post;
 import com.buri.restfulservice.domain.user.dto.CreateUserRequest;
 import java.time.LocalDate;
+import java.util.List;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,6 +25,9 @@ public class User {
 	private String password;
 	private String ssn;
 	private LocalDate createdAt;
+
+	@OneToMany(mappedBy = "user")
+	private List<Post> posts;
 
 	private User(String name, String password, String ssn) {
 		this.name = name;

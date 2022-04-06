@@ -17,7 +17,6 @@ public class UserResponse {
 	private String password;
 	private String ssn;
 
-
 	public UserResponse(User user) {
 		this.id = user.getId();
 		this.name = user.getName();
